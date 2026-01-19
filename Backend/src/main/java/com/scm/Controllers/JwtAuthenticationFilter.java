@@ -1,6 +1,5 @@
 package com.scm.Controllers;
 
-
 import com.scm.Services.Implementation.SecurityCustomUserService;
 import com.scm.helpers.JwtUtils;
 import jakarta.servlet.FilterChain;
@@ -28,17 +27,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain)
+            HttpServletResponse response,
+            FilterChain filterChain)
             throws ServletException, IOException {
 
         // Skip JWT validation for public endpoints
         String path = request.getServletPath();
         if (path.equals("/register") ||
-            path.equals("/sendotp") ||
-            path.equals("/verifyotp") ||
-            path.equals("/login") ||
-            path.equals("/token")) {
+                path.equals("/sendotp") ||
+                path.equals("/verifyotp") ||
+                path.equals("/login") ||
+                path.equals("/token")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -56,22 +55,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
             if (jwtUtils.validateJwtToken(jwtToken)) {
-                UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(
-                                userDetails,
-                                null,
-                                userDetails.getAuthorities()
-                        );
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                        userDetails,
+                        null,
+                        userDetails.getAuthorities());
 
                 authToken.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(request)
-                );
+                        new WebAuthenticationDetailsSource().buildDetails(request));
 
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
-
-
 
         filterChain.doFilter(request, response);
     }
