@@ -61,8 +61,10 @@ public class Securityconfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/token").permitAll()
                         .requestMatchers("/register").permitAll()
-                        .requestMatchers("/sendotp").permitAll()// public login endpoint
-                        .anyRequest().authenticated()          // all other endpoints require JWT
+                        .requestMatchers("/sendotp").permitAll()
+                        .requestMatchers("/verifyotp").permitAll()
+                        .requestMatchers("/login").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
